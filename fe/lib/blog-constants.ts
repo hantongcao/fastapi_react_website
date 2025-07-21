@@ -1,0 +1,32 @@
+// 博客分类枚举，与后端 BlogCategory 枚举保持一致
+export const BLOG_CATEGORIES = {
+  TECH: 'TECH',
+  LIFE: 'LIFE',
+  STUDY: 'STUDY',
+  SUMMARY: 'SUMMARY',
+  DIARY: 'DIARY',
+  ESSAY: 'ESSAY',
+} as const
+
+// 博客分类标签映射
+export const BLOG_CATEGORY_LABELS: { [key: string]: string } = {
+  [BLOG_CATEGORIES.TECH]: '技术',
+  [BLOG_CATEGORIES.LIFE]: '生活',
+  [BLOG_CATEGORIES.STUDY]: '学习',
+  [BLOG_CATEGORIES.SUMMARY]: '总结',
+  [BLOG_CATEGORIES.DIARY]: '日记',
+  [BLOG_CATEGORIES.ESSAY]: '随笔',
+}
+
+// 博客分类选项（用于表单）
+export const BLOG_CATEGORY_OPTIONS = [
+  { value: BLOG_CATEGORIES.TECH, label: BLOG_CATEGORY_LABELS[BLOG_CATEGORIES.TECH] },
+  { value: BLOG_CATEGORIES.LIFE, label: BLOG_CATEGORY_LABELS[BLOG_CATEGORIES.LIFE] },
+  { value: BLOG_CATEGORIES.STUDY, label: BLOG_CATEGORY_LABELS[BLOG_CATEGORIES.STUDY] },
+  { value: BLOG_CATEGORIES.SUMMARY, label: BLOG_CATEGORY_LABELS[BLOG_CATEGORIES.SUMMARY] },
+  { value: BLOG_CATEGORIES.DIARY, label: BLOG_CATEGORY_LABELS[BLOG_CATEGORIES.DIARY] },
+  { value: BLOG_CATEGORIES.ESSAY, label: BLOG_CATEGORY_LABELS[BLOG_CATEGORIES.ESSAY] },
+] as const
+
+// 博客分类类型
+export type BlogCategory = typeof BLOG_CATEGORIES[keyof typeof BLOG_CATEGORIES]
