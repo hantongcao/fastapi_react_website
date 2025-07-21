@@ -9,6 +9,7 @@ from bluenote.api.exceptions import (
 
 from bluenote.server.deps import SessionDep, ListParamsDep
 from bluenote.schemas.photos import PhotoCreate, PhotoPublic, PhotosPublic, Photo, PhotoUpdate, PhotoUpdateResponse
+from bluenote.schemas.common import PaginatedList
 from bluenote.utils.logger import setup_logger
 
 router = APIRouter()
@@ -65,24 +66,25 @@ async def create_photo(
         logger.error(f"[CREATE_PHOTO] 创建照片失败: {e}")
         raise InternalServerErrorException(message=f"Failed to create photo: {e}")
 
-    result = PhotoPublic(
-        id=photo.id,
-        title=photo.title,
-        description=photo.description,
-        url_list=photo.url_list or [],  # 如果为None则使用空列表
-        location_name=photo.location_name,
-        status=photo.status,
-        visibility=photo.visibility,
-        tags=photo.tags,
-        category=photo.category,
-        like_count=photo.like_count,
-        comment_count=photo.comment_count,
-        share_count=photo.share_count,
-        view_count=photo.view_count,
-        taken_at=photo.taken_at,
-        created_at=photo.created_at,
-        updated_at=photo.updated_at,
-    )
+    photo_data = {
+        "id": photo.id,
+        "title": photo.title,
+        "description": photo.description,
+        "url_list": photo.url_list,
+        "location_name": photo.location_name,
+        "status": photo.status,
+        "visibility": photo.visibility,
+        "tags": photo.tags,
+        "category": photo.category,
+        "like_count": photo.like_count,
+        "comment_count": photo.comment_count,
+        "share_count": photo.share_count,
+        "view_count": photo.view_count,
+        "taken_at": photo.taken_at,
+        "created_at": photo.created_at,
+        "updated_at": photo.updated_at,
+    }
+    result = PhotoPublic.model_validate(photo_data)
     logger.info(f"[CREATE_PHOTO] 返回照片数据: id={result.id}, title={result.title}")
     return result
 
@@ -110,8 +112,31 @@ async def list_photos(session: SessionDep, params: ListParamsDep, search: str = 
         per_page=params.perPage
     )
     
-    logger.info(f"[LIST_PHOTOS] 返回照片列表: 总数={len(result.data) if hasattr(result, 'data') else 'unknown'}")
-    return result
+    # Convert each photo item to PhotoPublic to ensure proper tags and url_list parsing
+    photo_items = []
+    for photo in result.items:
+        photo_data = {
+            "id": photo.id,
+            "title": photo.title,
+            "description": photo.description,
+            "url_list": photo.url_list,
+            "location_name": photo.location_name,
+            "status": photo.status,
+            "visibility": photo.visibility,
+            "tags": photo.tags,
+            "category": photo.category,
+            "like_count": photo.like_count,
+            "comment_count": photo.comment_count,
+            "share_count": photo.share_count,
+            "view_count": photo.view_count,
+            "taken_at": photo.taken_at,
+            "created_at": photo.created_at,
+            "updated_at": photo.updated_at,
+        }
+        photo_items.append(PhotoPublic.model_validate(photo_data))
+    
+    logger.info(f"[LIST_PHOTOS] 返回照片列表: 总数={len(photo_items)}")
+    return PaginatedList[PhotoPublic](items=photo_items, pagination=result.pagination)
 
 
 @router.get("/{photo_id}", response_model=PhotoPublic)
@@ -131,24 +156,25 @@ async def get_photo(session: SessionDep, photo_id: int):
     except Exception as e:
         logger.warning(f"[GET_PHOTO] 更新浏览数失败: {e}")
     
-    result = PhotoPublic(
-        id=photo.id,
-        title=photo.title,
-        description=photo.description,
-        url_list=photo.url_list or [],  # 如果为None则使用空列表
-        location_name=photo.location_name,
-        status=photo.status,
-        visibility=photo.visibility,
-        tags=photo.tags,
-        category=photo.category,
-        like_count=photo.like_count,
-        comment_count=photo.comment_count,
-        share_count=photo.share_count,
-        view_count=photo.view_count,
-        taken_at=photo.taken_at,
-        created_at=photo.created_at,
-        updated_at=photo.updated_at,
-    )
+    photo_data = {
+        "id": photo.id,
+        "title": photo.title,
+        "description": photo.description,
+        "url_list": photo.url_list,
+        "location_name": photo.location_name,
+        "status": photo.status,
+        "visibility": photo.visibility,
+        "tags": photo.tags,
+        "category": photo.category,
+        "like_count": photo.like_count,
+        "comment_count": photo.comment_count,
+        "share_count": photo.share_count,
+        "view_count": photo.view_count,
+        "taken_at": photo.taken_at,
+        "created_at": photo.created_at,
+        "updated_at": photo.updated_at,
+    }
+    result = PhotoPublic.model_validate(photo_data)
     
     logger.info(f"[GET_PHOTO] 返回照片数据: id={result.id}, title={result.title}")
     return result
