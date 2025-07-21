@@ -26,37 +26,9 @@
 
 ## 安装和配置
 
-### 1. 数据库设置
+### 1. 数据库设置（可掠过）
 
-首先创建 PostgreSQL 数据库和用户：
-
-```bash
-# 创建数据库
-psql -U postgres -c "CREATE DATABASE blueweb;"
-
-# 创建用户
-psql -U postgres -c "CREATE USER blue_web WITH PASSWORD 'blue_password';"
-
-# 授予权限
-psql -U postgres -c "GRANT ALL PRIVILEGES ON DATABASE blueweb TO blue_web;"
-
-# 验证连接
-psql -U blue_web -d blueweb -c "SELECT current_database(), current_user;"
-```
-
-### 2. 配置文件修改
-
-修改以下配置文件中的数据库连接信息：
-
-**alembic.ini** (第63行):
-```ini
-sqlalchemy.url = postgresql://blue_web:blue_password@localhost:5432/blueweb
-```
-
-**bluenote/config/config.py** (第20行):
-```python
-DATABASE_URL: str = "postgresql://blue_web:blue_password@localhost:5432/blueweb"
-```
+### 2. 配置文件修改(可略过)
 
 ### 3. 环境设置和依赖安装
 
@@ -123,51 +95,3 @@ be/
 - **JWT 配置**: 密钥、算法、过期时间
 - **OpenAI 配置**: API 密钥、模型设置
 - **日志配置**: 日志文件、格式、轮转设置
-
-## 开发指南
-
-### 添加新的 API 路由
-
-1. 在 `routes/` 目录下创建新的路由文件
-2. 在 `schemas/` 目录下定义相应的 Pydantic 模型
-3. 在 `routes/routes.py` 中注册新路由
-
-### 数据库迁移
-
-```bash
-# 创建新的迁移文件
-uv run alembic revision --autogenerate -m "描述信息"
-
-# 应用迁移
-uv run alembic upgrade head
-
-# 回滚迁移
-uv run alembic downgrade -1
-```
-
-### 日志查看
-
-日志文件位于 `logs/bluenote.log`，支持自动轮转。
-
-## 故障排除
-
-### 常见问题
-
-1. **数据库连接失败**
-   - 检查 PostgreSQL 服务是否启动
-   - 验证数据库用户名和密码
-   - 确认数据库名称正确
-
-2. **Alembic 迁移失败**
-   - 检查 `alembic.ini` 中的数据库 URL
-   - 确保数据库用户有足够权限
-   - 查看迁移文件是否有语法错误
-
-3. **依赖安装失败**
-   - 尝试使用不同的 PyPI 镜像
-   - 检查 Python 版本兼容性
-   - 清理缓存后重新安装
-
-## 许可证
-
-本项目采用 MIT 许可证。
