@@ -52,7 +52,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-lg supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link href="/" className="flex items-center space-x-2.5 group">
+        <Link href="/" prefetch={false} className="flex items-center space-x-2.5 group">
           <div className="p-2 rounded-lg bg-gradient-to-r from-primary to-secondary text-primary-foreground group-hover:scale-110 transition-transform">
             <Code2 className="h-5 w-5" />
           </div>
@@ -64,6 +64,7 @@ export function Header() {
             <Link
               key={item.href}
               href={item.href}
+              prefetch={false}
               className={cn(
                 "relative text-sm font-medium transition-colors hover:text-primary",
                 pathname === item.href ? "text-primary" : "text-muted-foreground",
@@ -96,6 +97,7 @@ export function Header() {
               <Link
                 key={item.href}
                 href={item.href}
+                prefetch={false}
                 onClick={() => setIsMenuOpen(false)}
                 className={cn(
                   "px-4 py-2 rounded-md text-sm font-medium transition-colors",

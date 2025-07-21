@@ -111,6 +111,35 @@ export default function BlogPostPage({ params }: { params: Promise<{ id: string 
     )
   }
 
+  const handleRetry = () => {
+    setError(null)
+    setLoading(true)
+    // 重新触发 useEffect 中的 fetchBlog
+    const fetchBlog = async () => {
+      try {
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+        const response = await fetch(`${baseUrl}/api/blogs/${id}`)
+        
+        if (response.status === 404) {
+          notFound()
+          return
+        }
+        
+        if (!response.ok) {
+          throw new Error('获取博客详情失败')
+        }
+        
+        const data: ApiBlogDetail = await response.json()
+        setBlog(data)
+      } catch (err) {
+        setError(err instanceof Error ? err.message : '未知错误')
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchBlog()
+  }
+
   if (error) {
     return (
       <div className="container mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-12">
@@ -118,7 +147,7 @@ export default function BlogPostPage({ params }: { params: Promise<{ id: string 
           <h1 className="text-2xl font-bold text-destructive mb-4">加载失败</h1>
           <p className="text-muted-foreground mb-4">{error}</p>
           <button 
-            onClick={() => window.location.reload()}
+            onClick={handleRetry}
             className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
           >
             重试
@@ -154,7 +183,7 @@ export default function BlogPostPage({ params }: { params: Promise<{ id: string 
               <span>{blog.status === 'published' ? '已发布' : '草稿'}</span>
             </div>
             {isLoggedIn && userInfo?.is_admin && (
-              <Link href={`/blog-edit/${blog.id}`}>
+              <Link href={`/blog-edit/${blog.id}`} prefetch={false}>
                 <Button variant="outline" size="sm" className="flex items-center gap-2">
                   <Edit className="h-4 w-4" />
                   编辑

@@ -19,7 +19,7 @@ export function BlogPostCard({ post, variant = "full" }: BlogPostCardProps) {
         <CardHeader>
           <span className="text-sm text-primary font-semibold mb-1">{post.category}</span>
           <CardTitle className="text-xl group-hover:text-primary transition-colors">
-            <Link href={`/blog/${post.slug}`}>{post.title}</Link>
+            <Link href={`/blog/${post.slug}`} prefetch={false}>{post.title}</Link>
           </CardTitle>
         </CardHeader>
         <CardContent className="flex-grow">
@@ -39,7 +39,7 @@ export function BlogPostCard({ post, variant = "full" }: BlogPostCardProps) {
           </div>
         </div>
         <CardTitle className="text-2xl group-hover:text-primary transition-colors">
-          <Link href={`/blog/${post.slug}`}>{post.title}</Link>
+          <Link href={`/blog/${post.slug}`} prefetch={false}>{post.title}</Link>
         </CardTitle>
       </CardHeader>
       <CardContent className="flex-grow">
@@ -53,7 +53,7 @@ export function BlogPostCard({ post, variant = "full" }: BlogPostCardProps) {
             </Badge>
           ))}
         </div>
-        <Link href={`/blog/${post.slug}`} className="text-primary font-semibold flex items-center group/link">
+        <Link href={`/blog/${post.slug}`} prefetch={false} className="text-primary font-semibold flex items-center group/link">
           阅读全文
           <ArrowRight className="ml-1 h-4 w-4 group-hover/link:translate-x-1 transition-transform" />
         </Link>

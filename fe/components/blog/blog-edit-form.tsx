@@ -180,7 +180,8 @@ export function BlogEditForm({ blogId }: BlogEditFormProps) {
           // 处理客户端重定向
           if (result.redirectTo) {
             setTimeout(() => {
-              window.location.href = result.redirectTo
+              // 使用 Next.js 路由进行跳转
+              router.push(result.redirectTo)
             }, 1000) // 给用户时间看到成功消息
           }
         }
@@ -218,10 +219,42 @@ export function BlogEditForm({ blogId }: BlogEditFormProps) {
             <h2 className="text-2xl font-bold text-destructive mb-4">加载失败</h2>
             <p className="text-muted-foreground mb-6">{loadError}</p>
             <div className="flex gap-4 justify-center">
-              <Button onClick={() => window.location.reload()} variant="outline">
+              <Button onClick={async () => {
+                setLoadError(null)
+                setIsLoading(true)
+                // 重新加载数据而不是刷新整个页面
+                try {
+                  const authToken = localStorage.getItem('access_token')
+                  if (!authToken) {
+                    setLoadError('未找到认证信息，请重新登录')
+                    return
+                  }
+
+                  const result = await getBlogData(blogId, authToken)
+                  if (result.status === 'error') {
+                    setLoadError(result.message)
+                    return
+                  }
+
+                  const data = result.data
+                  setBlogData({
+                    title: data.title || '',
+                    content: data.content || '',
+                    summary: data.summary || '',
+                    tags: data.tags || [],
+                    category: data.category || '',
+                    status: data.status || 'draft',
+                    visibility: data.visibility || 'public',
+                  })
+                } catch (error) {
+                  setLoadError('加载博客数据失败')
+                } finally {
+                  setIsLoading(false)
+                }
+              }} variant="outline">
                 重试
               </Button>
-              <Link href="/blog">
+              <Link href="/blog" prefetch={false}>
                 <Button variant="default">
                   <ArrowLeft className="mr-2 h-4 w-4" />
                   返回博客列表
@@ -462,7 +495,7 @@ export function BlogEditForm({ blogId }: BlogEditFormProps) {
                   </>
                 )}
               </Button>
-              <Link href={`/blog/${blogId}`}>
+              <Link href={`/blog/${blogId}`} prefetch={false}>
                 <Button type="button" variant="outline">
                   取消
                 </Button>

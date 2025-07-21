@@ -27,8 +27,13 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Dependencies (will be handled by subdirectory .gitignore files)
-# node_modules/
+# Dependencies
+node_modules/
+fe/node_modules/
+fe/.next/
+fe/.next
+fe/out/
+fe/build/
 __pycache__/
 *.pyc
 *.pyo

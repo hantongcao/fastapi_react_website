@@ -18,7 +18,7 @@ interface ApiBlog {
   status: string
   visibility: string
   tags: string[]
-  category: string
+  category: string | null // 明确标注可能为 null
   created_at: string
   updated_at: string
 }
@@ -51,7 +51,12 @@ const convertApiBlogToBlogPost = (apiBlog: ApiBlog): BlogPost => {
   }
 
   // 将API返回的category字符串转换为BlogCategory类型
-  const mapCategory = (category: string): BlogCategory => {
+  const mapCategory = (category: string | null | undefined): BlogCategory => {
+    // 添加空值检查
+    if (!category) {
+      return BLOG_CATEGORIES.TECH // 默认值
+    }
+    
     const upperCategory = category.toUpperCase()
     return Object.values(BLOG_CATEGORIES).includes(upperCategory as BlogCategory) 
       ? upperCategory as BlogCategory 
@@ -109,13 +114,13 @@ export default function HomePage() {
             </p>
             <div className="flex flex-wrap gap-4 justify-center md:justify-start">
               <Button asChild size="lg" className="group">
-                <Link href="/blog">
+                <Link href="/blog" prefetch={false}>
                   阅读博客
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </Button>
               <Button asChild variant="outline" size="lg">
-                <Link href="/contact">联系我</Link>
+                <Link href="/contact" prefetch={false}>联系我</Link>
               </Button>
             </div>
           </div>
@@ -144,7 +149,7 @@ export default function HomePage() {
               近期文章
             </h2>
             <Button asChild variant="ghost" className="group">
-              <Link href="/blog">
+              <Link href="/blog" prefetch={false}>
                 查看全部
                 <ArrowRight className="ml-2 h-4 w-4 group-hover/link:translate-x-1 transition-transform" />
               </Link>

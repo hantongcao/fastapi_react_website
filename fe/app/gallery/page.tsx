@@ -10,6 +10,7 @@ import type { GalleryPost } from "@/lib/types"
 import { PageHeader } from "@/components/shared/page-header"
 import { GalleryLightbox } from "@/components/gallery/gallery-lightbox"
 import { useAuth } from "@/hooks/use-auth"
+import { useRouter } from "next/navigation"
 
 
 import { CATEGORY_LABELS } from "@/lib/photo-constants"
@@ -51,6 +52,7 @@ export default function GalleryPage() {
   const [currentImageIndexes, setCurrentImageIndexes] = useState<{[key: number]: number}>({})
   const [autoSlideIntervals, setAutoSlideIntervals] = useState<{[key: number]: NodeJS.Timeout}>({})
   const { isLoggedIn, userInfo } = useAuth()
+  const router = useRouter()
 
 
 
@@ -98,13 +100,7 @@ export default function GalleryPage() {
       setPhotos([])
       setCurrentPage(1)
       setTotalPages(1)
-      // 只有在网络错误或服务器错误时才显示错误信息
-      // 如果是404或数据为空，则不显示错误
-      if (err instanceof Error && !err.message.includes('404')) {
-        setError('加载照片数据失败，请稍后重试')
-      } else {
-        setError(null)
-      }
+      setError('加载照片数据失败')
     } finally {
       setLoading(false)
     }
@@ -168,7 +164,8 @@ export default function GalleryPage() {
 
   // 编辑照片 - 跳转到编辑页面
   const handleEditPhoto = (photoId: number) => {
-    window.location.href = `/photo-edit/${photoId}`
+    // 使用 Next.js 路由进行跳转
+    router.push(`/photo-edit/${photoId}`)
   }
 
   // 检查当前用户是否可以编辑/删除照片 - 仅限管理员
@@ -266,18 +263,8 @@ export default function GalleryPage() {
 
         {/* 照片列表 */}
         {!loading && !error && (
-          <>
-            {photos.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-16 text-center">
-                <Camera className="h-16 w-16 text-muted-foreground/50 mb-4" />
-                <h3 className="text-xl font-semibold text-muted-foreground mb-2">暂无照片</h3>
-                <p className="text-muted-foreground max-w-md">
-                  还没有上传任何照片，快来分享你的精彩瞬间吧！
-                </p>
-              </div>
-            ) : (
-              <div className="grid gap-6">
-                {photos.map((post) => (
+          <div className="grid gap-6">
+            {photos.map((post) => (
             <Card key={post.id} className="hover:shadow-lg hover:border-primary/20 transition-all duration-300">
               <CardHeader>
                 <div className="flex items-start justify-between">
@@ -451,10 +438,8 @@ export default function GalleryPage() {
                 </div>
               </CardContent>
             </Card>
-                ))}
-              </div>
-            )}
-          </>
+            ))}
+          </div>
         )}
 
         {/* 分页组件 */}

@@ -332,3 +332,74 @@ export async function PUT(
     )
   }
 }
+
+// DELETE方法：删除博客
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params
+    
+    // 获取Authorization header
+    const authHeader = request.headers.get('Authorization')
+    if (!authHeader) {
+      return NextResponse.json(
+        { error: 'Authorization header is required' },
+        { status: 401 }
+      )
+    }
+    
+    // 调用外部API删除博客
+    const externalApiUrl = `http://localhost:8000/v1/blogs/${id}`
+    
+    try {
+      const response = await fetch(externalApiUrl, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': authHeader,
+          'accept': 'application/json'
+        }
+      })
+      
+      if (response.status === 401) {
+        return NextResponse.json(
+          { error: 'Unauthorized' },
+          { status: 401 }
+        )
+      }
+      
+      if (response.status === 404) {
+        return NextResponse.json(
+          { error: 'Blog not found' },
+          { status: 404 }
+        )
+      }
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: 'Delete failed' }))
+        return NextResponse.json(
+          { error: errorData.message || 'Failed to delete blog' },
+          { status: response.status }
+        )
+      }
+      
+      return NextResponse.json(
+        { message: 'Blog deleted successfully' },
+        { status: 200 }
+      )
+    } catch (fetchError) {
+      console.error('调用外部API删除博客失败:', fetchError)
+      return NextResponse.json(
+        { error: 'Failed to connect to external API' },
+        { status: 503 }
+      )
+    }
+  } catch (error) {
+    console.error('删除博客失败:', error)
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    )
+  }
+}

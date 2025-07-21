@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useState, useEffect } from "react"
 import { PageHeader } from "@/components/shared/page-header"
 import { useAuth } from "@/hooks/use-auth"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { BLOG_CATEGORY_LABELS } from '@/lib/blog-constants'
 
@@ -61,6 +62,7 @@ export default function BlogPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
   const [selectedStatus, setSelectedStatus] = useState<string>('all')
   const { isLoggedIn, userInfo } = useAuth()
+  const router = useRouter()
 
   // 从API获取博客数据
   const fetchBlogs = async (page: number, search?: string, category?: string, status?: string) => {
@@ -101,13 +103,7 @@ export default function BlogPage() {
       setBlogs([])
       setCurrentPage(1)
       setTotalPages(1)
-      // 只有在网络错误或服务器错误时才显示错误信息
-      // 如果是404或数据为空，则不显示错误
-      if (err instanceof Error && !err.message.includes('404')) {
-        setError('获取博客数据失败，请稍后重试')
-      } else {
-        setError(null)
-      }
+      setError('获取博客数据失败，请稍后重试')
     } finally {
       setLoading(false)
     }
@@ -175,7 +171,37 @@ export default function BlogPage() {
 
   // 编辑博客 - 跳转到编辑页面
   const handleEditBlog = (blogId: number) => {
-    window.location.href = `/blog-edit/${blogId}`
+    // 使用 Next.js 路由进行跳转
+    router.push(`/blog-edit/${blogId}`)
+  }
+
+  // 删除博客
+  const handleDeleteBlog = async (blogId: number) => {
+    if (!confirm('确定要删除这篇博客吗？此操作不可撤销。')) {
+      return
+    }
+
+    try {
+      const token = localStorage.getItem('access_token')
+      const response = await fetch(`/api/blogs/${blogId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (response.ok) {
+        // 重新获取当前页面的博客列表
+        fetchBlogs(currentPage, searchTerm, selectedCategory, selectedStatus)
+      } else {
+        const errorData = await response.json()
+        alert(errorData.error || '删除失败，请重试')
+      }
+    } catch (error) {
+      console.error('删除博客失败:', error)
+      alert('删除失败，请重试')
+    }
   }
 
   return (
@@ -246,26 +272,14 @@ export default function BlogPage() {
 
       {/* 博客列表 */}
       {!loading && !error && (
-        <>
-          {blogs.length === 0 ? (
-            <div className="text-center py-12">
-              <BookOpen className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-muted-foreground mb-2">暂无博客文章</h3>
-              <p className="text-muted-foreground">
-                {searchTerm || selectedCategory !== 'all' || selectedStatus !== 'all' 
-                  ? '没有找到符合条件的文章，请尝试调整搜索条件' 
-                  : '还没有发布任何文章，敬请期待'}
-              </p>
-            </div>
-          ) : (
-            <div className="grid md:grid-cols-2 gap-6">
-              {blogs.map((blog) => (
+        <div className="grid md:grid-cols-2 gap-6">
+          {blogs.map((blog) => (
             <Card key={blog.id} className="hover:shadow-lg hover:border-primary/20 transition-all duration-300">
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <CardTitle className="flex items-center gap-2">
                     <BookOpen className="h-5 w-5 text-primary" />
-                    <Link href={`/blog/${blog.id}`} className="hover:text-primary transition-colors">
+                    <Link href={`/blog/${blog.id}`} prefetch={false} className="hover:text-primary transition-colors">
                       {blog.title}
                     </Link>
                   </CardTitle>
@@ -283,7 +297,8 @@ export default function BlogPage() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="text-primary hover:text-primary hover:bg-primary/10 border-primary/20 hover:border-primary/30 transition-colors"
+                        onClick={() => handleDeleteBlog(blog.id)}
+                        className="text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200 hover:border-red-300 transition-colors"
                       >
                         <Trash2 className="h-4 w-4 mr-1" />
                         删除
@@ -349,10 +364,8 @@ export default function BlogPage() {
                 </Link>
               </CardFooter>
             </Card>
-              ))}
-            </div>
-          )}
-        </>
+          ))}
+        </div>
       )}
 
       {/* 分页组件 */}
