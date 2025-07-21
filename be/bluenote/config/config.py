@@ -17,7 +17,7 @@ class Settings:
     LOG_BACKUP_COUNT: int = 5
     
     # 数据库配置
-    DATABASE_URL: str = "sqlite+aiosqlite:///d:/Coding/blueweb-main/blueweb-main/db/bluenote.db"
+    DATABASE_URL: str = "sqlite+aiosqlite:///../db/bluenote.db"
 
     # 初始管理员账号密码
     INIT_ADMIN_USERNAME: str = "admin"

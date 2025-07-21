@@ -9,6 +9,7 @@ from bluenote.api.exceptions import (
 
 from bluenote.server.deps import SessionDep, ListParamsDep
 from bluenote.schemas.blogs import BlogCreate, BlogPublic, BlogsPublic, Blog, BlogUpdate, BlogUpdateResponse
+from bluenote.schemas.common import PaginatedList
 from bluenote.utils.logger import setup_logger
 
 router = APIRouter()
@@ -62,22 +63,24 @@ async def create_blog(
         logger.error(f"[CREATE_BLOG] 创建博客失败: {e}")
         raise InternalServerErrorException(message=f"Failed to create blog: {e}")
 
-    result = BlogPublic(
-        id=blog.id,
-        title=blog.title,
-        content=blog.content,
-        summary=blog.summary,
-        status=blog.status,
-        visibility=blog.visibility,
-        tags=blog.tags,
-        category=blog.category,
-        like_count=blog.like_count,
-        comment_count=blog.comment_count,
-        share_count=blog.share_count,
-        view_count=blog.view_count,
-        created_at=blog.created_at,
-        updated_at=blog.updated_at,
-    )
+    # 构建数据字典，让模型验证器处理tags字段
+    blog_data = {
+        "id": blog.id,
+        "title": blog.title,
+        "content": blog.content,
+        "summary": blog.summary,
+        "status": blog.status,
+        "visibility": blog.visibility,
+        "tags": blog.tags,
+        "category": blog.category,
+        "like_count": blog.like_count,
+        "comment_count": blog.comment_count,
+        "share_count": blog.share_count,
+        "view_count": blog.view_count,
+        "created_at": blog.created_at,
+        "updated_at": blog.updated_at,
+    }
+    result = BlogPublic.model_validate(blog_data)
     logger.info(f"[CREATE_BLOG] 返回博客数据: id={result.id}, title={result.title}")
     return result
 
@@ -104,8 +107,30 @@ async def list_blogs(session: SessionDep, params: ListParamsDep, search: str = N
         per_page=params.perPage
     )
     
-    logger.info(f"[LIST_BLOGS] 返回博客列表: 总数={len(result.data) if hasattr(result, 'data') else 'unknown'}")
-    return result
+    # Convert each blog item to BlogPublic to ensure proper tags parsing
+    blog_items = []
+    for blog in result.items:
+        blog_data = {
+            "id": blog.id,
+            "title": blog.title,
+            "content": blog.content,
+            "summary": blog.summary,
+            "status": blog.status,
+            "visibility": blog.visibility,
+            "tags": blog.tags,
+            "category": blog.category,
+            "like_count": blog.like_count,
+            "comment_count": blog.comment_count,
+            "share_count": blog.share_count,
+            "view_count": blog.view_count,
+            "created_at": blog.created_at,
+            "updated_at": blog.updated_at,
+        }
+        blog_items.append(BlogPublic.model_validate(blog_data))
+    
+    logger.info(f"[LIST_BLOGS] 返回博客列表: 总数={len(blog_items)}")
+    return PaginatedList[BlogPublic](items=blog_items, pagination=result.pagination)
+
 
 
 @router.get("/{blog_id}", response_model=BlogPublic)
@@ -125,22 +150,24 @@ async def get_blog(session: SessionDep, blog_id: int):
     except Exception as e:
         logger.warning(f"[GET_BLOG] 更新浏览数失败: {e}")
     
-    result = BlogPublic(
-        id=blog.id,
-        title=blog.title,
-        content=blog.content,
-        summary=blog.summary,
-        status=blog.status,
-        visibility=blog.visibility,
-        tags=blog.tags,
-        category=blog.category,
-        like_count=blog.like_count,
-        comment_count=blog.comment_count,
-        share_count=blog.share_count,
-        view_count=blog.view_count,
-        created_at=blog.created_at,
-        updated_at=blog.updated_at,
-    )
+    # 构建数据字典，让模型验证器处理tags字段
+    blog_data = {
+        "id": blog.id,
+        "title": blog.title,
+        "content": blog.content,
+        "summary": blog.summary,
+        "status": blog.status,
+        "visibility": blog.visibility,
+        "tags": blog.tags,
+        "category": blog.category,
+        "like_count": blog.like_count,
+        "comment_count": blog.comment_count,
+        "share_count": blog.share_count,
+        "view_count": blog.view_count,
+        "created_at": blog.created_at,
+        "updated_at": blog.updated_at,
+    }
+    result = BlogPublic.model_validate(blog_data)
     
     logger.info(f"[GET_BLOG] 返回博客数据: id={result.id}, title={result.title}")
     return result

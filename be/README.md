@@ -63,7 +63,7 @@ DATABASE_URL: str = "postgresql://blue_web:blue_password@localhost:5432/blueweb"
 ```bash
 # 进入后端目录
 cd be
-
+```bash
 # 使用 uv 安装依赖（推荐使用阿里云镜像加速）
 uv sync --all-extras --index-url https://mirrors.aliyun.com/pypi/simple/
 ```
@@ -72,14 +72,14 @@ uv sync --all-extras --index-url https://mirrors.aliyun.com/pypi/simple/
 
 ```bash
 # 运行数据库迁移
-alembic upgrade head
+uv run alembic upgrade head
 ```
 
 ### 5. 启动服务
 
 ```bash
 # 启动开发服务器
-python3 main.py
+uv run python main.py
 ```
 
 服务将在 `http://0.0.0.0:8000` 启动，支持热重载。
@@ -136,13 +136,13 @@ be/
 
 ```bash
 # 创建新的迁移文件
-alembic revision --autogenerate -m "描述信息"
+uv run alembic revision --autogenerate -m "描述信息"
 
 # 应用迁移
-alembic upgrade head
+uv run alembic upgrade head
 
 # 回滚迁移
-alembic downgrade -1
+uv run alembic downgrade -1
 ```
 
 ### 日志查看
