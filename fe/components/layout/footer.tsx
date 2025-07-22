@@ -16,7 +16,7 @@ export function Footer() {
   }
 
   const getQRImagePath = (platform: string) => {
-    return `/imgs/${platform}.jpg`
+    return `/contact/${platform}.jpg`
   }
 
   return (
@@ -28,7 +28,7 @@ export function Footer() {
               <p className="text-sm text-muted-foreground flex items-center gap-1.5">
                 由 <span className="font-semibold text-primary">{AUTHOR_NAME}</span> 用 ❤️ 精心构建
               </p>
-              <p className="text-xs text-muted-foreground mt-1">&copy; 2024 版权所有</p>
+              <p className="text-xs text-muted-foreground mt-1">&copy;  二〇二五 版权所有 · 未经许可 请勿擅用</p>
             </div>
             <div className="flex items-center space-x-4">
               {/* 抖音图标 */}

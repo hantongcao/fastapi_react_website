@@ -105,12 +105,12 @@ export default function HomePage() {
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div className="space-y-6 text-center md:text-left">
             <h1 className="font-sans text-5xl md:text-7xl font-bold tracking-tight">
-              当代码与
+              世界上最后一位
               <br />
-              <span className="text-primary">创想交汇</span>
+              <span className="text-primary">代码艺术家</span>
             </h1>
             <p className="text-lg text-muted-foreground max-w-lg mx-auto md:mx-0">
-              欢迎来到我的数字空间。我是一位充满热情的开发者和设计师，致力于探索技术与美学的交集。在这里，我分享我的旅程、见解和创作。
+              欢迎来到我的数字空间站。我是一名AI工程师、画家、脱口秀演员、引导型恋人、足球运动员；同时也是一名顺风车司机、流浪汉、日结工作者。我的梦想是流浪地球。欢迎大家在这里见证我的成长，我将分享我的旅程、见解和创作。
             </p>
             <div className="flex flex-wrap gap-4 justify-center md:justify-start">
               <Button asChild size="lg" className="group">

@@ -279,8 +279,7 @@ export default function GalleryPage() {
                        onClick={() => setSelectedPost(post)}
                        className="text-primary hover:text-primary hover:bg-primary/10 border-primary/20 hover:border-primary/30 transition-colors"
                      >
-                       <ZoomIn className="h-4 w-4 mr-1" />
-                       查看大图
+                       <ZoomIn className="h-4 w-4" />
                      </Button>
                      {canEditPhoto(post) && (
                        <>
@@ -290,17 +289,15 @@ export default function GalleryPage() {
                            onClick={() => handleEditPhoto(post.id)}
                            className="text-primary hover:text-primary hover:bg-primary/10 border-primary/20 hover:border-primary/30 transition-colors"
                          >
-                           <Edit className="h-4 w-4 mr-1" />
-                           编辑
+                           <Edit className="h-4 w-4" />
                          </Button>
                          <Button
-                           variant="outline"
+                           variant="destructive"
                            size="sm"
                            onClick={() => handleDeletePhoto(post.id)}
-                           className="text-primary hover:text-primary hover:bg-primary/10 border-primary/20 hover:border-primary/30 transition-colors"
+                           className=""
                          >
-                           <Trash2 className="h-4 w-4 mr-1" />
-                           删除
+                           <Trash2 className="h-4 w-4" />
                          </Button>
                        </>
                      )}

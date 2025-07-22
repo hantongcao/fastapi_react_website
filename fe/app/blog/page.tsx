@@ -207,7 +207,7 @@ export default function BlogPage() {
   return (
     <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 flex flex-col min-h-[calc(100vh-14rem)] animate-fade-in-up">
       <div className="mb-12">
-        <PageHeader title="我的数字花园" description="一个关于 Web 开发、设计和前沿技术的文章集合。" />
+        <PageHeader title="数字花园" description="世界上尚未发现的人类文明藏经阁。" />
       </div>
 
       {/* 搜索与筛选 */}
@@ -291,17 +291,15 @@ export default function BlogPage() {
                         onClick={() => handleEditBlog(blog.id)}
                         className="text-primary hover:text-primary hover:bg-primary/10 border-primary/20 hover:border-primary/30 transition-colors"
                       >
-                        <Edit className="h-4 w-4 mr-1" />
-                        编辑
+                        <Edit className="h-4 w-4" />
                       </Button>
                       <Button
-                        variant="outline"
+                        variant="destructive"
                         size="sm"
                         onClick={() => handleDeleteBlog(blog.id)}
-                        className="text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200 hover:border-red-300 transition-colors"
+                        className=""
                       >
-                        <Trash2 className="h-4 w-4 mr-1" />
-                        删除
+                        <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
                   )}

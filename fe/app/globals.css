@@ -14,6 +14,8 @@
     --primary-foreground: 355.7 100% 97.3%;
     --secondary: 346.8 77.2% 90%;
     --secondary-foreground: 346.8 77.2% 49.8%;
+    --accent-color: 330 60% 38%; /* #932F67 辅色 */
+    --accent-color-foreground: 0 0% 100%;
     --muted: 240 4.8% 95.9%;
     --muted-foreground: 240 3.8% 46.1%;
     --accent: 240 4.8% 95.9%;
@@ -37,6 +39,8 @@
     --primary-foreground: 265 100% 98%;
     --secondary: 240 5% 15%;
     --secondary-foreground: 265 85% 70%;
+    --accent-color: 270 100% 62%; /* #B13BFF 辅色 */
+    --accent-color-foreground: 0 0% 100%;
     --muted: 240 5% 15%;
     --muted-foreground: 215 20.2% 65.1%;
     --accent: 240 5% 15%;

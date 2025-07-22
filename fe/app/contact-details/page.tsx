@@ -358,9 +358,9 @@ export default function ContactDetailsPage() {
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
                         <Button
-                          variant="outline"
+                          variant="destructive"
                           size="sm"
-                          className="h-8 w-8 p-0 text-primary hover:text-primary hover:bg-primary/10 border-primary/20 hover:border-primary/30 transition-colors"
+                          className="h-8 w-8 p-0"
                           disabled={deletingId === contact.id}
                         >
                           {deletingId === contact.id ? (
