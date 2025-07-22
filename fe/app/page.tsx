@@ -128,7 +128,7 @@ export default function HomePage() {
             <div className="absolute -inset-4 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-full blur-3xl"></div>
             <div className="relative rounded-2xl shadow-2xl overflow-hidden">
               <Image
-                src="/placeholder.svg?width=500&height=500"
+                src="/home/shuaige.jpg"
                 alt="抽象数字艺术"
                 width={500}
                 height={500}
