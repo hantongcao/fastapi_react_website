@@ -19,7 +19,7 @@ export default function ContactPage() {
     {
       icon: MapPin,
       label: "位置",
-      value: "中国，无锡",
+      value: "中国-无锡",
       href: "#"
     },
     {

@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { Sparkles } from "lucide-react"
 
-const prompts = ["给我推荐三本关于 UI 设计的书籍", "如何用 React 实现一个秒表组件？", "写一首关于代码的短诗"]
+const prompts = ["空腹能吃饭吗？", "陨石为什么每次都能精准砸到陨石坑？", "眼镜没发明之前，眼镜蛇叫什么？"]
 
 interface ExamplePromptsProps {
   onPromptClick: (prompt: string) => void
@@ -15,8 +15,8 @@ export function ExamplePrompts({ onPromptClick }: ExamplePromptsProps) {
       <div className="mb-6 rounded-full bg-primary/10 p-4">
         <Sparkles className="h-8 w-8 text-primary" />
       </div>
-      <h2 className="text-2xl font-bold font-sans">AI 助手</h2>
-      <p className="mt-2 text-muted-foreground">开始对话，或尝试下面的示例提示</p>
+      <h2 className="text-2xl font-bold font-sans">AI 小助手</h2>
+      <p className="mt-2 text-muted-foreground">开始battle，或尝试下面的灵魂之问</p>
       <div className="mt-8 flex flex-wrap justify-center gap-3">
         {prompts.map((prompt) => (
           <Button
