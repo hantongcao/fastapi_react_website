@@ -13,9 +13,9 @@ export const API_CONFIG = {
   PHOTOS_API_URL: process.env.PHOTOS_API_URL || 'http://localhost:8000/v1/photos',
   
   // Chat API (Eazytec)
-  EAZYTEC_API_KEY: process.env.EAZYTEC_API_KEY || 'eazytec_25abefe91013adef_9e8e77041a87c925de10acf21040f6c8',
-  EAZYTEC_BASE_URL: process.env.EAZYTEC_BASE_URL || 'https://maas.eazytec-cloud.com/v1',
-  EAZYTEC_MODEL: process.env.EAZYTEC_MODEL || 'maas/qwen2.5-coder',
+  EAZYTEC_API_KEY: process.env.EAZYTEC_API_KEY || 'sk-lywtivqzfpinemwjzjsuzxifdmemuurijhahpijbqlnrfmoa',
+  EAZYTEC_BASE_URL: process.env.EAZYTEC_BASE_URL || 'https://api.siliconflow.cn/v1',
+  EAZYTEC_MODEL: process.env.EAZYTEC_MODEL || 'deepseek-ai/DeepSeek-R1-0528-Qwen3-8B',
   
   // Request timeouts and limits
   MAX_DURATION: parseInt(process.env.MAX_DURATION || '30'),

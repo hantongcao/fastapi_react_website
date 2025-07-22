@@ -28,13 +28,6 @@ class Settings:
     JWT_ALGORITHM: str = "HS256"
     JWT_EXPIRE_MINUTES: int = 120
     
-    # OpenAI 配置
-    OPENAI_API_KEY: str = "eazytec_ec93ce714794e79d_5bd31c12884a8d1549a1740782419d02"
-    OPENAI_BASE_URL: str = "https://maas.eazytec-cloud.com/v1"
-    OPENAI_TIMEOUT: float = 30.0
-    OPENAI_DEFAULT_MODEL: str = "maas/qwen3-235b-a22b"
-    OPENAI_MAX_TOKENS: int = 4096
-    OPENAI_TEMPERATURE: float = 0.7
     
     # FastAPI 配置
     APP_TITLE: str = "Bluenote"
