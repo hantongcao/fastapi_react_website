@@ -24,18 +24,12 @@ interface ApiBlogDetail {
   visibility: string
   tags: string[]
   category: string
+  like_count: number
+  comment_count: number
+  share_count: number
+  view_count: number
   created_at: string
   updated_at: string
-  author: {
-    name: string
-    avatar: string
-  }
-  stats: {
-    views: number
-    likes: number
-    comments: number
-    shares: number
-  }
 }
 
 export default function BlogPostPage({ params }: { params: Promise<{ id: string }> }) {
@@ -59,8 +53,8 @@ export default function BlogPostPage({ params }: { params: Promise<{ id: string 
     const fetchBlog = async () => {
       try {
         setLoading(true)
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
-        const response = await fetch(`${baseUrl}/api/blogs/${id}`)
+        const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000'
+        const response = await fetch(`${baseUrl}/v1/blogs/${id}`)
         
         if (response.status === 404) {
           notFound()
@@ -117,8 +111,8 @@ export default function BlogPostPage({ params }: { params: Promise<{ id: string 
     // 重新触发 useEffect 中的 fetchBlog
     const fetchBlog = async () => {
       try {
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
-        const response = await fetch(`${baseUrl}/api/blogs/${id}`)
+        const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000'
+        const response = await fetch(`${baseUrl}/v1/blogs/${id}`)
         
         if (response.status === 404) {
           notFound()
@@ -201,7 +195,7 @@ export default function BlogPostPage({ params }: { params: Promise<{ id: string 
             </div>
             <div className="flex items-center gap-2">
               <Eye className="h-4 w-4" />
-              <span>{blog.stats.views} 次阅读</span>
+              <span>{blog.view_count} 次阅读</span>
             </div>
           </div>
           

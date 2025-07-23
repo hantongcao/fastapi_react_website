@@ -5,10 +5,31 @@ const nextConfig = {
 
   // 图片优化配置
   images: {
-    domains: [
-      'localhost',
-      'example.com',
-      // 添加你的图片域名
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '3000',
+        pathname: '/uploads/**',
+      },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '8081',
+        pathname: '/uploads/**',
+      },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '3001',
+        pathname: '/uploads/**',
+      },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '80',
+        pathname: '/uploads/**',
+      },
     ],
     formats: ['image/webp', 'image/avif'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
@@ -139,7 +160,7 @@ const nextConfig = {
   },
 
   // 输出配置
-  output: 'standalone',
+  // output: 'standalone', // 注释掉以避免 npm start 问题
 
   // 静态导出配置（如果需要）
   // output: 'export',

@@ -5,8 +5,8 @@ import { redirect } from "next/navigation"
 // 获取博客详情
 export async function getBlogData(blogId: string, authToken: string) {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
-    const response = await fetch(`${baseUrl}/api/blogs/${blogId}`, {
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000'
+    const response = await fetch(`${baseUrl}/v1/blogs/${blogId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -113,8 +113,8 @@ export async function updateBlogData(formData: FormData) {
     }
 
     // 发送更新请求
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
-    const response = await fetch(`${baseUrl}/api/blogs/${blogId}`, {
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000'
+    const response = await fetch(`${baseUrl}/v1/blogs/${blogId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
