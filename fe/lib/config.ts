@@ -12,9 +12,9 @@ export const API_CONFIG = {
   // Photos API
   PHOTOS_API_URL: process.env.PHOTOS_API_URL || 'http://localhost:8000/v1/photos',
   
-  // Chat API (Eazytec)
-  EAZYTEC_API_KEY: process.env.EAZYTEC_API_KEY || 'sk-lywtivqzfpinemwjzjsuzxifdmemuurijhahpijbqlnrfmoa',
-  EAZYTEC_BASE_URL: process.env.EAZYTEC_BASE_URL || 'https://api.siliconflow.cn/v1',
+  // AI Chat API
+  EAZYTEC_API_KEY: process.env.EAZYTEC_API_KEY || '',
+  EAZYTEC_BASE_URL: process.env.EAZYTEC_BASE_URL || 'https://api.deepseek.com',
   EAZYTEC_MODEL: process.env.EAZYTEC_MODEL || 'deepseek-ai/DeepSeek-R1-0528-Qwen3-8B',
   
   // Request timeouts and limits
@@ -23,4 +23,3 @@ export const API_CONFIG = {
 }
 
 // Type definitions for better type safety
-export type ApiConfig = typeof API_CONFIG

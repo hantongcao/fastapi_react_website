@@ -14,7 +14,6 @@ import { useRouter } from "next/navigation"
 
 
 import { CATEGORY_LABELS } from "@/lib/photo-constants"
-
 const POSTS_PER_PAGE = 3
 const PHOTOS_PER_PAGE = 3
 
@@ -70,7 +69,7 @@ export default function GalleryPage() {
       
       // 转换API数据为GalleryPost格式
       const galleryPosts: GalleryPost[] = data.items.map((photo) => {
-        // 处理图片URL列表 - 直接使用后端返回的路径
+        // 处理图片URL列表 - 直接使用静态文件路径
         const processedUrls = photo.url_list.filter(url => url && url.trim() !== '')
         
         // 使用第一张图片作为主要显示图片
@@ -195,7 +194,7 @@ export default function GalleryPage() {
     const currentImage = images[currentIndex] || post.src
     
     // 验证URL是否有效，如果无效则返回占位符
-    if (!currentImage || currentImage.trim() === '' || currentImage === 'undefined' || currentImage === 'null') {
+    if (!currentImage || currentImage.trim() === '') {
       return '/placeholder.svg'
     }
     
