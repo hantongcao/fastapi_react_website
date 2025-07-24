@@ -53,8 +53,7 @@ export default function BlogPostPage({ params }: { params: Promise<{ id: string 
     const fetchBlog = async () => {
       try {
         setLoading(true)
-        const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000'
-        const response = await fetch(`${baseUrl}/v1/blogs/${id}`)
+        const response = await fetch(`/api/blogs/${id}`)
         
         if (response.status === 404) {
           notFound()
@@ -111,8 +110,7 @@ export default function BlogPostPage({ params }: { params: Promise<{ id: string 
     // 重新触发 useEffect 中的 fetchBlog
     const fetchBlog = async () => {
       try {
-        const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000'
-        const response = await fetch(`${baseUrl}/v1/blogs/${id}`)
+        const response = await fetch(`/api/blogs/${id}`)
         
         if (response.status === 404) {
           notFound()

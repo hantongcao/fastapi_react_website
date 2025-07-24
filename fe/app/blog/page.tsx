@@ -68,8 +68,7 @@ export default function BlogPage() {
   const fetchBlogs = async (page: number, search?: string, category?: string, status?: string) => {
     setLoading(true)
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000'
-      let url = `${baseUrl}/v1/blogs?page=${page}&perPage=${POSTS_PER_PAGE}&watch=false`
+      let url = `/api/blogs?page=${page}&perPage=${POSTS_PER_PAGE}&watch=false`
       
       // 添加搜索参数
       if (search && search.trim()) {
@@ -183,8 +182,7 @@ export default function BlogPage() {
 
     try {
       const token = localStorage.getItem('access_token')
-      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000'
-      const response = await fetch(`${baseUrl}/v1/blogs/${blogId}`, {
+      const response = await fetch(`/api/blogs/${blogId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,

@@ -5,32 +5,8 @@ const nextConfig = {
 
   // 图片优化配置
   images: {
-    remotePatterns: [
-      {
-        protocol: 'http',
-        hostname: 'localhost',
-        port: '3000',
-        pathname: '/uploads/**',
-      },
-      {
-        protocol: 'http',
-        hostname: 'localhost',
-        port: '8081',
-        pathname: '/uploads/**',
-      },
-      {
-        protocol: 'http',
-        hostname: 'localhost',
-        port: '3001',
-        pathname: '/uploads/**',
-      },
-      {
-        protocol: 'http',
-        hostname: 'localhost',
-        port: '80',
-        pathname: '/uploads/**',
-      },
-    ],
+    // 禁用图片优化以避免生产模式下的静态文件服务问题
+    unoptimized: true,
     formats: ['image/webp', 'image/avif'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
