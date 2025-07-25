@@ -48,6 +48,26 @@ PORT=您的前端端口 npm run dev
 
 ## ⚙️ 环境变量配置
 
+### 前端环境变量
+
+在 `fe/` 目录下创建 `.env.local` 文件：
+
+```bash
+# 前端服务器配置
+NEXT_PUBLIC_FRONTEND_HOST=your_server_ip
+NEXT_PUBLIC_FRONTEND_PORT=3000
+
+# 后端服务器配置  
+NEXT_PUBLIC_BACKEND_HOST=your_server_ip
+NEXT_PUBLIC_BACKEND_PORT=8000
+
+# 重要：服务器端API调用URL配置
+NEXT_PUBLIC_SITE_URL=http://${NEXT_PUBLIC_FRONTEND_HOST}:${NEXT_PUBLIC_FRONTEND_PORT}
+NEXT_PUBLIC_API_BASE_URL=http://${NEXT_PUBLIC_BACKEND_HOST}:${NEXT_PUBLIC_BACKEND_PORT}
+```
+
+**注意：** `NEXT_PUBLIC_SITE_URL` 是关键配置，用于服务器端API调用。如果不设置此变量，博客编辑等功能可能会出现连接错误。
+
 ### 核心配置变量
 
 | 变量名 | 描述 | 示例值 |
@@ -204,6 +224,53 @@ curl http://您的后端IP:您的后端端口/v1/contacts
 - 联系页面: `http://您的前端IP:您的前端端口/contact`
 - 联系详情: `http://您的前端IP:您的前端端口/contact-details`
 - 照片画廊: `http://您的前端IP:您的前端端口/gallery`
+
+## 🔧 故障排除
+
+### 常见问题
+
+1. **博客编辑页面连接错误**
+   
+   **错误信息：**
+   ```
+   获取博客数据失败: TypeError: fetch failed
+   Error: connect ECONNREFUSED 127.0.0.1:3000
+   ```
+   
+   **原因：** 服务器端API调用使用了错误的URL（localhost:3000）
+   
+   **解决方案：**
+   - 确保在 `fe/.env.local` 中正确设置了环境变量：
+     ```bash
+     NEXT_PUBLIC_FRONTEND_HOST=your_actual_server_ip
+     NEXT_PUBLIC_FRONTEND_PORT=3000
+     NEXT_PUBLIC_SITE_URL=http://your_actual_server_ip:3000
+     ```
+   - 重启前端服务：
+     ```bash
+     cd fe && npm run build && npm start
+     ```
+
+2. **端口被占用**
+   ```bash
+   # 查看端口占用
+   lsof -i :3000
+   lsof -i :8000
+   
+   # 杀死占用进程
+   kill -9 <PID>
+   ```
+
+3. **权限问题**
+   ```bash
+   # 给脚本执行权限
+   chmod +x deploy.sh
+   ```
+
+4. **数据库连接失败**
+   - 检查数据库服务是否启动
+   - 验证数据库连接配置
+   - 确认数据库文件路径正确
 
 ## ❓ 常见问题
 

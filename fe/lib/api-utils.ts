@@ -14,9 +14,16 @@ export function buildApiUrl(path: string, isServerSide: boolean = false): string
   const cleanPath = path.startsWith('/') ? path.slice(1) : path
   
   if (isServerSide) {
-    // 服务器端：使用完整URL
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
-    return `${baseUrl}/${cleanPath}`
+    // 服务器端：优先使用环境变量，否则构建本地URL
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL
+    if (siteUrl) {
+      return `${siteUrl}/${cleanPath}`
+    }
+    
+    // 如果没有设置NEXT_PUBLIC_SITE_URL，使用前端配置构建URL
+    const frontendHost = process.env.NEXT_PUBLIC_FRONTEND_HOST || 'localhost'
+    const frontendPort = process.env.NEXT_PUBLIC_FRONTEND_PORT || '3000'
+    return `http://${frontendHost}:${frontendPort}/${cleanPath}`
   } else {
     // 客户端：使用相对路径
     return `/${cleanPath}`
