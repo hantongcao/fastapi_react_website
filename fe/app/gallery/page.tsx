@@ -67,10 +67,41 @@ export default function GalleryPage() {
       
       const data: ApiResponse = await response.json()
       
+      // 标准化图片URL的辅助函数
+      const normalizeImageUrl = (url: string): string => {
+        if (!url || url.trim() === '') {
+          return '/placeholder.svg'
+        }
+        
+        // 如果是绝对URL（包含http://或https://），转换为相对路径
+        if (url.startsWith('http://') || url.startsWith('https://')) {
+          // 提取路径部分，例如从 "http://192.168.151.110:7777/uploads/xxx.png" 提取 "/uploads/xxx.png"
+          const urlObj = new URL(url)
+          const pathname = urlObj.pathname
+          // 如果是uploads路径，转换为API路径
+          if (pathname.startsWith('/uploads/')) {
+            return `/api/images${pathname}`
+          }
+          return pathname
+        }
+        
+        // 处理相对路径
+        const normalizedUrl = url.startsWith('/') ? url : `/${url}`
+        
+        // 如果是uploads路径，转换为API路径
+        if (normalizedUrl.startsWith('/uploads/')) {
+          return `/api/images${normalizedUrl}`
+        }
+        
+        return normalizedUrl
+      }
+      
       // 转换API数据为GalleryPost格式
       const galleryPosts: GalleryPost[] = data.items.map((photo) => {
-        // 处理图片URL列表 - 直接使用静态文件路径
-        const processedUrls = photo.url_list.filter(url => url && url.trim() !== '')
+        // 处理图片URL列表 - 标准化所有URL为相对路径
+        const processedUrls = photo.url_list
+          .filter(url => url && url.trim() !== '')
+          .map(url => normalizeImageUrl(url))
         
         // 使用第一张图片作为主要显示图片
         const mainImageUrl = processedUrls.length > 0 ? processedUrls[0] : "/placeholder.svg"
@@ -313,12 +344,11 @@ export default function GalleryPage() {
                       onMouseEnter={() => startAutoSlide(post.id, getImageCount(post))}
                       onMouseLeave={() => stopAutoSlide(post.id)}
                     >
-                      <Image
+                      <img
                         src={getCurrentImage(post) || "/placeholder.svg"}
                         alt={post.alt}
-                        width={400}
-                        height={300}
                         className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                        loading="lazy"
                       />
                       
                       {/* 轮播控制按钮 - 仅在有多张图片时显示 */}

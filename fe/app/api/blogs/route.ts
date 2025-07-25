@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { API_CONFIG } from '@/lib/config'
 
 // 模拟博客数据 - 实际项目中应该从数据库获取
 const mockBlogs = [
@@ -111,7 +112,7 @@ export async function GET(request: NextRequest) {
 
     // 尝试从外部API获取数据
     try {
-      let externalApiUrl = `http://localhost:8000/v1/blogs?page=${page}&perPage=${perPage}`
+      let externalApiUrl = `${API_CONFIG.BLOGS_API_URL}?page=${page}&perPage=${perPage}`
       
       // 添加搜索参数
       if (search && search.trim()) {

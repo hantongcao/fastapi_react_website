@@ -20,6 +20,32 @@ export function GalleryLightbox({ post, onClose }: GalleryLightboxProps) {
   const images = post.srcList && post.srcList.length > 0 ? post.srcList : [post.src]
   const hasMultipleImages = images.length > 1
 
+  // 标准化图片URL
+  const normalizeImageUrl = (url: string) => {
+    if (!url) return '/placeholder.svg'
+    
+    // 如果是绝对路径（http://或https://开头），提取相对路径
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      const urlObj = new URL(url)
+      const pathname = urlObj.pathname
+      // 如果是uploads路径，转换为API路径
+      if (pathname.startsWith('/uploads/')) {
+        return `/api/images${pathname}`
+      }
+      return pathname
+    }
+    
+    // 处理相对路径
+    const normalizedUrl = url.startsWith('/') ? url : `/${url}`
+    
+    // 如果是uploads路径，转换为API路径
+    if (normalizedUrl.startsWith('/uploads/')) {
+      return `/api/images${normalizedUrl}`
+    }
+    
+    return normalizedUrl
+  }
+
   const nextImage = () => {
     setCurrentImageIndex((prev) => (prev + 1) % images.length)
   }
@@ -38,11 +64,10 @@ export function GalleryLightbox({ post, onClose }: GalleryLightboxProps) {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="relative w-full h-[60vh] md:h-[70vh] flex-shrink-0">
-          <Image 
-            src={images[currentImageIndex] || "/placeholder.svg"} 
+          <img 
+            src={normalizeImageUrl(images[currentImageIndex]) || "/placeholder.svg"} 
             alt={post.alt} 
-            fill 
-            className="object-contain" 
+            className="w-full h-full object-contain" 
           />
           
           {/* 图片导航按钮 */}

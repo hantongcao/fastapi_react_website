@@ -89,8 +89,15 @@ export async function POST(request: NextRequest) {
     const filePath = path.join(process.cwd(), 'public/uploads', fileName)
     await writeFile(filePath, buffer)
     
-    // 返回文件URL
-    const fileUrl = `${getSiteBaseUrl()}/uploads/${fileName}`
+    // 返回相对路径URL，避免生产环境下的域名问题
+    const fileUrl = `/uploads/${fileName}`
+    
+    console.log('File uploaded successfully:', {
+      fileName,
+      fileUrl,
+      size: file.size,
+      type: file.type
+    })
     
     return NextResponse.json({
       success: true,

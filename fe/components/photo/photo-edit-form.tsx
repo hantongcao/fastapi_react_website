@@ -19,7 +19,6 @@ import { X, Plus, Loader2, Save, ArrowLeft, AlertTriangle, ImageIcon, Upload } f
 import { useToast } from "@/hooks/use-toast"
 import { useAuth } from "@/hooks/use-auth"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import Image from "next/image"
 
 import { PHOTO_CATEGORIES } from "@/lib/photo-constants"
 
@@ -414,18 +413,32 @@ export function PhotoEditForm({ photoId }: PhotoEditFormProps) {
             {(photoData.url_list && photoData.url_list.length > 0) || newPreviews.length > 0 ? (
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {/* 现有图片 */}
-                {photoData.url_list && photoData.url_list.map((url, index) => (
+                {photoData.url_list && photoData.url_list.map((url, index) => {
+                  // URL标准化处理
+                  const normalizeImageUrl = (url: string) => {
+                    if (!url) return '/placeholder.svg'
+                    if (url.startsWith('http://') || url.startsWith('https://')) {
+                      return url
+                    }
+                    if (url.startsWith('/uploads/')) {
+                      return `/api/images${url}`
+                    }
+                    if (url.startsWith('uploads/')) {
+                      return `/api/images/${url}`
+                    }
+                    return url
+                  }
+                  
+                  return (
                   <div key={`existing-${index}`} className="relative group">
-                    <Image
-                      src={url}
+                    <img
+                      src={normalizeImageUrl(url)}
                       alt={`${photoData.title} - 图片 ${index + 1}`}
-                      width={200}
-                      height={150}
                       className="rounded-lg object-cover w-full h-32 border"
                       onError={(e) => {
-                        const target = e.target as HTMLImageElement
-                        target.style.display = 'none'
-                        target.nextElementSibling?.classList.remove('hidden')
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = 'none';
+                        target.nextElementSibling?.classList.remove('hidden');
                       }}
                     />
                     {/* 图片加载失败时的占位符 */}
@@ -453,16 +466,15 @@ export function PhotoEditForm({ photoId }: PhotoEditFormProps) {
                       {index + 1}
                     </div>
                   </div>
-                ))}
+                  );
+                })}
                 
                 {/* 新添加的图片 */}
                 {newPreviews.map((preview, index) => (
                   <div key={`new-${index}`} className="relative group">
-                    <Image
+                    <img
                       src={preview}
                       alt={`新图片 ${index + 1}`}
-                      width={200}
-                      height={150}
                       className="rounded-lg object-cover w-full h-32 border border-primary"
                     />
                     {/* 删除按钮 */}

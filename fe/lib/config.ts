@@ -1,5 +1,13 @@
 // API Configuration
 export const API_CONFIG = {
+  // Frontend Configuration
+  FRONTEND_HOST: process.env.NEXT_PUBLIC_FRONTEND_HOST || 'localhost',
+  FRONTEND_PORT: process.env.NEXT_PUBLIC_FRONTEND_PORT || '3000',
+  
+  // Backend Configuration
+  BACKEND_HOST: process.env.NEXT_PUBLIC_BACKEND_HOST || 'localhost',
+  BACKEND_PORT: process.env.NEXT_PUBLIC_BACKEND_PORT || '8000',
+  
   // Base API URL
   API_BASE_URL: process.env.API_BASE_URL || 'http://localhost:8000/v1',
   
@@ -11,6 +19,9 @@ export const API_CONFIG = {
   
   // Photos API
   PHOTOS_API_URL: process.env.PHOTOS_API_URL || 'http://localhost:8000/v1/photos',
+  
+  // Blogs API
+  BLOGS_API_URL: process.env.BLOGS_API_URL || 'http://localhost:8000/v1/blogs',
   
   // AI Chat API
   EAZYTEC_API_KEY: process.env.EAZYTEC_API_KEY || '',

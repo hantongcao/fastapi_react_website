@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { API_CONFIG } from '@/lib/config'
 
 // 模拟单篇博客数据
 const MOCK_BLOG_DETAIL = {
@@ -135,7 +136,7 @@ export async function GET(
     const { id } = await params
     
     // 从外部API获取博客数据
-    const externalApiUrl = `http://localhost:8000/v1/blogs/${id}`
+    const externalApiUrl = `${API_CONFIG.BLOGS_API_URL}/${id}`
     
     try {
       const response = await fetch(externalApiUrl, {
@@ -247,7 +248,7 @@ export async function PUT(
     }
     
     // 调用外部API更新博客
-    const externalApiUrl = `http://localhost:8000/v1/blogs/${id}`
+    const externalApiUrl = `${API_CONFIG.BLOGS_API_URL}/${id}`
     
     try {
       const response = await fetch(externalApiUrl, {
@@ -351,7 +352,7 @@ export async function DELETE(
     }
     
     // 调用外部API删除博客
-    const externalApiUrl = `http://localhost:8000/v1/blogs/${id}`
+    const externalApiUrl = `${API_CONFIG.BLOGS_API_URL}/${id}`
     
     try {
       const response = await fetch(externalApiUrl, {
