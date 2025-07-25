@@ -17,7 +17,7 @@ import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/hooks/use-toast"
 import { useAuth } from "@/hooks/use-auth"
 import { Plus, X, Loader2, FileText, Eye, ArrowLeft } from "lucide-react"
-import { getBlogData, updateBlogData } from "@/app/blog-edit/actions"
+// 移除Server Actions导入，改用客户端API调用
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -76,13 +76,30 @@ export function BlogEditForm({ blogId }: BlogEditFormProps) {
           return
         }
 
-        const result = await getBlogData(blogId, authToken)
-        if (result.status === 'error') {
-          setLoadError(result.message)
+        // 直接使用客户端API调用，避免Server Actions的服务器端URL问题
+        const response = await fetch(`/api/blogs/${blogId}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${authToken}`,
+          },
+        })
+
+        if (!response.ok) {
+          if (response.status === 401) {
+            setLoadError('未授权访问，请重新登录')
+            return
+          }
+          if (response.status === 404) {
+            setLoadError('博客不存在')
+            return
+          }
+          const errorData = await response.json().catch(() => ({ message: '获取博客失败' }))
+          setLoadError(errorData.message || '获取博客失败')
           return
         }
 
-        const data = result.data
+        const data = await response.json()
         setBlogData({
           title: data.title || '',
           content: data.content || '',
@@ -160,35 +177,81 @@ export function BlogEditForm({ blogId }: BlogEditFormProps) {
     
     startTransition(async () => {
       try {
-        const formData = new FormData(event.currentTarget)
-        const result = await updateBlogData(formData)
-        
-        if (result && result.status === 'error') {
+        const authToken = localStorage.getItem('access_token')
+        if (!authToken || !userInfo?.is_admin) {
           toast({
-            title: "更新失败",
-            description: result.message,
+            title: "权限不足",
+            description: "只有管理员可以编辑博客",
             variant: "destructive",
             duration: 2000,
           })
-        } else if (result && result.status === 'success') {
+          return
+        }
+
+        const requestData = {
+          title: blogData.title.trim(),
+          content: blogData.content.trim(),
+          summary: blogData.summary?.trim() || '',
+          category: blogData.category,
+          tags: blogData.tags,
+          status: blogData.status,
+          visibility: blogData.visibility,
+        }
+
+        const response = await fetch(`/api/blogs/${blogId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${authToken}`,
+          },
+          body: JSON.stringify(requestData),
+        })
+
+        if (!response.ok) {
+          if (response.status === 401) {
+            toast({
+              title: "更新失败",
+              description: "未授权访问，请重新登录",
+              variant: "destructive",
+              duration: 2000,
+            })
+            return
+          }
+          if (response.status === 404) {
+            toast({
+              title: "更新失败",
+              description: "博客不存在",
+              variant: "destructive",
+              duration: 2000,
+            })
+            return
+          }
+          const errorData = await response.json().catch(() => ({ message: '更新失败' }))
           toast({
-            title: "更新成功",
-            description: result.message || "博客已成功更新",
+            title: "更新失败",
+            description: errorData.message || "更新博客失败",
+            variant: "destructive",
             duration: 2000,
           })
-          
-          // 处理客户端重定向
-          if (result.redirectTo) {
-            setTimeout(() => {
-              // 使用 Next.js 路由进行跳转
-              router.push(result.redirectTo)
-            }, 1000) // 给用户时间看到成功消息
-          }
+          return
         }
+
+        const result = await response.json()
+        toast({
+          title: "更新成功",
+          description: "博客已成功更新",
+          duration: 2000,
+        })
+        
+        // 跳转到博客详情页
+        setTimeout(() => {
+          router.push(`/blog/${blogId}`)
+        }, 1000)
+        
       } catch (error) {
         toast({
           title: "更新失败",
-          description: error instanceof Error ? error.message : "未知错误",
+          description: error instanceof Error ? error.message : "网络错误，请检查连接",
           variant: "destructive",
           duration: 2000,
         })
@@ -230,13 +293,30 @@ export function BlogEditForm({ blogId }: BlogEditFormProps) {
                     return
                   }
 
-                  const result = await getBlogData(blogId, authToken)
-                  if (result.status === 'error') {
-                    setLoadError(result.message)
+                  // 直接使用客户端API调用
+                  const response = await fetch(`/api/blogs/${blogId}`, {
+                    method: 'GET',
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'Authorization': `Bearer ${authToken}`,
+                    },
+                  })
+
+                  if (!response.ok) {
+                    if (response.status === 401) {
+                      setLoadError('未授权访问，请重新登录')
+                      return
+                    }
+                    if (response.status === 404) {
+                      setLoadError('博客不存在')
+                      return
+                    }
+                    const errorData = await response.json().catch(() => ({ message: '获取博客失败' }))
+                    setLoadError(errorData.message || '获取博客失败')
                     return
                   }
 
-                  const data = result.data
+                  const data = await response.json()
                   setBlogData({
                     title: data.title || '',
                     content: data.content || '',
@@ -288,17 +368,6 @@ export function BlogEditForm({ blogId }: BlogEditFormProps) {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleFormSubmit} ref={formRef} className="space-y-6">
-            {/* 隐藏字段用于传递数据给Server Action */}
-            <input type="hidden" name="blogId" value={blogId} />
-            <input type="hidden" name="title" value={blogData.title} />
-            <input type="hidden" name="content" value={blogData.content} />
-            <input type="hidden" name="summary" value={blogData.summary} />
-            <input type="hidden" name="category" value={blogData.category} />
-            <input type="hidden" name="tags" value={JSON.stringify(blogData.tags)} />
-            <input type="hidden" name="status" value={blogData.status} />
-            <input type="hidden" name="visibility" value={blogData.visibility} />
-            <input type="hidden" name="authToken" value={typeof window !== 'undefined' ? localStorage.getItem('access_token') || '' : ''} />
-            <input type="hidden" name="userIsAdmin" value={userInfo?.is_admin ? 'true' : 'false'} />
             
             {/* 标题 */}
             <div className="space-y-2">
