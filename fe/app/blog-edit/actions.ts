@@ -1,11 +1,13 @@
 "use server"
 
 import { redirect } from "next/navigation"
+import { revalidatePath } from "next/cache"
+import { buildApiUrl } from "@/lib/api-utils"
 
 // 获取博客详情
 export async function getBlogData(blogId: string, authToken: string) {
   try {
-    const response = await fetch(`/api/blogs/${blogId}`, {
+    const response = await fetch(buildApiUrl(`/api/blogs/${blogId}`, true), {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -112,7 +114,7 @@ export async function updateBlogData(formData: FormData) {
     }
 
     // 发送更新请求
-    const response = await fetch(`/api/blogs/${blogId}`, {
+    const response = await fetch(buildApiUrl(`/api/blogs/${blogId}`, true), {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

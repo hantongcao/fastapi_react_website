@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { writeFile } from 'fs/promises'
 import path from 'path'
-import { API_CONFIG } from '@/lib/config'
+import { getSiteBaseUrl } from '@/lib/api-utils'
 
 // 验证管理员权限的辅助函数
 async function verifyAdminPermission(authHeader: string): Promise<{ isValid: boolean; error?: string }> {
@@ -90,7 +90,7 @@ export async function POST(request: NextRequest) {
     await writeFile(filePath, buffer)
     
     // 返回文件URL
-    const fileUrl = `/uploads/${fileName}`
+    const fileUrl = `${getSiteBaseUrl()}/uploads/${fileName}`
     
     return NextResponse.json({
       success: true,

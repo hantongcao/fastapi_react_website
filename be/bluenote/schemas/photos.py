@@ -75,13 +75,13 @@ class Photo(PhotoBase, BaseModelMixin, table=True):
         original_url_list = self.url_list
         
         try:
-            # 如果tags是列表，转换为逗号分隔的字符串
-            if self.tags and isinstance(self.tags, list):
-                self.tags = ','.join(self.tags)
+            # 如果tags是列表，转换为逗号分隔的字符串（包括空列表）
+            if isinstance(self.tags, list):
+                self.tags = ','.join(self.tags) if self.tags else ''
             
-            # 如果url_list是列表，转换为逗号分隔的字符串
-            if self.url_list and isinstance(self.url_list, list):
-                self.url_list = ','.join(self.url_list)
+            # 如果url_list是列表，转换为逗号分隔的字符串（包括空列表）
+            if isinstance(self.url_list, list):
+                self.url_list = ','.join(self.url_list) if self.url_list else ''
             
             # 调用父类的save方法
             await super().save(session)
