@@ -5,7 +5,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { useState, useEffect } from "react"
-import { ArrowLeft, ArrowRight, MapPin, Camera, Tag, FolderOpen, Loader2, Edit, Trash2, ZoomIn } from "lucide-react"
+import { ArrowLeft, ArrowRight, MapPin, Camera, Tag, FolderOpen, Loader2, Edit, Trash2, ZoomIn, Clock } from "lucide-react"
 import type { GalleryPost } from "@/lib/types"
 import { PageHeader } from "@/components/shared/page-header"
 import { GalleryLightbox } from "@/components/gallery/gallery-lightbox"
@@ -29,6 +29,7 @@ interface ApiPhoto {
   user_id?: number
   created_at: string
   updated_at: string
+  taken_at?: string
 }
 
 interface ApiResponse {
@@ -117,7 +118,8 @@ export default function GalleryPage() {
           category: photo.category,
           tags: photo.tags,
           content: photo.description, // 保持与GalleryPost类型兼容
-          user_id: photo.user_id
+          user_id: photo.user_id,
+          taken_at: photo.taken_at
         }
       })
       
@@ -421,7 +423,16 @@ export default function GalleryPage() {
                   
                   {/* 照片信息 */}
                   <div className="md:col-span-2 space-y-4">
-                    <div className="grid md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      {/* 拍摄时间 */}
+                      {post.taken_at && (
+                        <div className="flex items-center gap-2">
+                          <Clock className="h-4 w-4 text-primary" />
+                          <span className="text-sm font-medium">拍摄时间:</span>
+                          <span className="text-sm text-primary font-bold">{new Date(post.taken_at).toLocaleString('zh-CN')}</span>
+                        </div>
+                      )}
+                      
                       {/* 只有当拍摄地点不为空时才显示 */}
                       {post.location_name && (
                         <div className="flex items-center gap-2">
@@ -430,6 +441,7 @@ export default function GalleryPage() {
                           <span className="text-sm text-primary font-bold">{post.location_name}</span>
                         </div>
                       )}
+                      
                       <div className="flex items-center gap-2">
                         <FolderOpen className="h-4 w-4 text-primary" />
                         <span className="text-sm font-medium">分类:</span>

@@ -25,6 +25,7 @@ export type GalleryPost = {
   category: string
   content: string
   user_id?: number
+  taken_at?: string
 }
 
 export type ContactInfo = {

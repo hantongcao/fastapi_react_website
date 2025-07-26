@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { X, MapPin, FolderOpen, Tag, ChevronLeft, ChevronRight } from "lucide-react"
+import { X, MapPin, FolderOpen, Tag, ChevronLeft, ChevronRight, Clock } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
@@ -103,7 +103,16 @@ export function GalleryLightbox({ post, onClose }: GalleryLightboxProps) {
           <h2 className="font-sans text-2xl font-bold">{post.title}</h2>
           
           {/* 基本信息 */}
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            {/* 拍摄时间 */}
+            {post.taken_at && (
+              <div className="flex items-center gap-2">
+                <Clock className="h-4 w-4 text-primary" />
+                <span className="text-sm font-medium">拍摄时间:</span>
+                <span className="text-sm text-primary">{new Date(post.taken_at).toLocaleString('zh-CN')}</span>
+              </div>
+            )}
+            
             {post.location_name && (
               <div className="flex items-center gap-2">
                 <MapPin className="h-4 w-4 text-primary" />
@@ -111,6 +120,7 @@ export function GalleryLightbox({ post, onClose }: GalleryLightboxProps) {
                 <span className="text-sm text-primary">{post.location_name}</span>
               </div>
             )}
+            
             <div className="flex items-center gap-2">
               <FolderOpen className="h-4 w-4 text-primary" />
               <span className="text-sm font-medium">分类:</span>
